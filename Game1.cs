@@ -2,13 +2,14 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using UIControl_MonoGame.Extra;
 using UIControl_MonoGame.UIControl;
 
 namespace UIControl_MonoGame
 {
     /// <summary>
     /// For normal works, you will need MonoGame Framework C# project templates- https://marketplace.visualstudio.com/items?itemName=MonoGame.MonoGame-Templates-VSExtension
-    /// 
+    /// Rebild Content.mgcb
     /// </summary>
 
 
@@ -90,7 +91,15 @@ namespace UIControl_MonoGame
             ListItemUI l = new (this, "listbox", new(500, 250, 200, 200), testRows, "LabelText"); // List box
             l.Сolumns[0].WidthRows = l.Сolumns[0].HeightRows; // We make this column to fit the texture size
             Grup1.Add(l);
-            Grup1.Add(new ImageUI(this,"image2",new Rectangle(100,300,150,150), animation));    // Image
+            Grup1.Add(new ImageUI(this,"image2",new Rectangle(100,300,130,150), animation));    // Image
+
+
+           /* var r = new Editor();
+            r.MainGrup = Grup1;
+            var t = r.MainGrup.ToXml();
+            r.SaveXml();
+            r.Load(Grup1);*/
+
         }
 
         /// <summary>
@@ -125,7 +134,7 @@ namespace UIControl_MonoGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
             _spriteBatch.Begin();
 
             Grup1.Draw(gameTime, _spriteBatch);     // Manages graphics for elements within a group

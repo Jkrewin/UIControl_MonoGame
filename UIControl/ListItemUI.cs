@@ -25,6 +25,8 @@ namespace UIControl_MonoGame.UIControl
         public int SelectedRow { get; set; } = -1;
         public int Height { get => RectObjectUI.Height; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, RectObjectUI.Width, value); }
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
+        public Anchor AnchorLocation { get; set; }
+
         /// <summary>
         /// Line thickness separating columns and rows
         /// </summary>

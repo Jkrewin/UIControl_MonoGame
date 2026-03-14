@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace UIControl_MonoGame.UIControl
 {
@@ -29,6 +30,7 @@ namespace UIControl_MonoGame.UIControl
         public int MaxLength { get; set; }
         public int Height { get => RectObjectUI.Height; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, RectObjectUI.Width, value); }
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
+        public Anchor AnchorLocation { get; set; } 
 
         public delegate void ChangeText(string str);
         /// <summary>
@@ -64,6 +66,8 @@ namespace UIControl_MonoGame.UIControl
             CursorPosition = text.Length;
             Visible = true;
         }
+
+        public string ToXml() => IToXml.ConvertXml(this) + "</" + this.GetType().Name + ">";
 
         public void ControlEvent(MouseState getMouse, KeyboardState getKey, uint getJoy = 1)
         {

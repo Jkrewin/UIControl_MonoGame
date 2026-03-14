@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "UIControl_MonoGame": {
+      "commandName": "Project"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    }
+  }
+}

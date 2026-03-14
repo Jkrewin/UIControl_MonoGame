@@ -13,7 +13,7 @@ namespace UIControl_MonoGame.UIControl
         public string Name { get; set; }
         public int Height { get => RectObjectUI.Height; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, RectObjectUI.Width, value); }
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
-
+        public Anchor AnchorLocation { get; set; }
 
         public delegate void Click();
         /// <summary>
@@ -64,6 +64,8 @@ namespace UIControl_MonoGame.UIControl
                 else return UnCheckTexture;
             }
         }
+
+       
 
         public CheckBoxUI(Game game, string nameUI, Rectangle possRec, UITexture checkStatus, UITexture uncheckStatus) {
             if (string.IsNullOrEmpty(nameUI)) throw new ArgumentNullException(nameof(nameUI));

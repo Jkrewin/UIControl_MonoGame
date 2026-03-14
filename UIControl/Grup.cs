@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace UIControl_MonoGame.UIControl
 {
-    internal class Grup : Cordinator, IControlUI
+    public class Grup : Cordinator, IControlUI
     {
         private readonly List<IControlUI> Controls  = [];   //Controls in this group
 
@@ -26,6 +26,12 @@ namespace UIControl_MonoGame.UIControl
                     control.Location = new Vector2(value.X + (v.X - RectObjectUI.X), value.Y + (v.Y - RectObjectUI.Y));
                 }
                 RectObjectUI = new Rectangle((int)value.X, (int)value.Y, RectObjectUI.Width, RectObjectUI.Height);
+
+                foreach (var item in Controls) {
+                    if (item.AnchorLocation is not null) {
+                        item.AnchorLocation.Resize = false;
+                    }
+                }                
             }
         }
         public bool Visible { get; set; } = true;
@@ -33,6 +39,7 @@ namespace UIControl_MonoGame.UIControl
         public string Name { get; set; }
         public int Height { get => RectObjectUI.Height ; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y , RectObjectUI.Width, value); }
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
+        public Anchor AnchorLocation { get; set; }
 
         public Grup(Game game, Rectangle recPoss, string name)
         {
@@ -57,10 +64,7 @@ namespace UIControl_MonoGame.UIControl
             if (string.IsNullOrEmpty(control.Name)) throw new System.Exception("The name of the control is not specified");
             if (Controls.Any(x => x.Name == control.Name)) throw new System.Exception("A control with that name already exists in the group.");
 
-            if (control is UIControl.RadioButtonUI r) {
-                r.OnResetRadioButton += ResetRadioButton;
-            }
-
+            
             Controls.Add(control);
         }
 
@@ -76,9 +80,18 @@ namespace UIControl_MonoGame.UIControl
         }
 
         public void Remove(IControlUI control) 
-        {
-            if (control is UIControl.RadioButtonUI r) r.OnResetRadioButton -= ResetRadioButton;
+        {           
             Controls.Remove(control);
+        }
+
+        public string[] ListNameControls() {
+            List<string> ls = [];
+
+            foreach (var item in Controls)
+            {
+                ls.Add(item.Name + " " + item .GetType().Name);
+            }
+            return ls.ToArray();
         }
 
         public void ControlEvent(MouseState getMouse, KeyboardState getKey, uint getJoy = 1)
@@ -93,6 +106,9 @@ namespace UIControl_MonoGame.UIControl
         {
             if (Visible)
             {
+
+                foreach (var item in Controls) ResizeAnchor(item);
+
                 foreach (var control in Controls) control.Draw(gameTime, spriteBatch);
                 if (ShowRedLine)
                 {
@@ -107,7 +123,54 @@ namespace UIControl_MonoGame.UIControl
             }
         }
 
-        private void ResetRadioButton(RadioButtonUI r ) {
+        public string ToXml() {
+            string deep="";
+            foreach (var item in Controls)
+            {
+                if (item is IToXml xml) deep += "\n" + xml.ToXml();
+            }
+            return deep;
+        }
+
+        private void ResizeAnchor(IControlUI control ) {
+            if (control.AnchorLocation is null) return;
+            if (control.AnchorLocation.Resize) return;
+
+            var a = control.AnchorLocation;
+            switch (a.Horizontal)
+            {
+                case Anchor.HorizontalAlignment.Center:
+                    control.Location = new Vector2(((RectObjectUI.Width / 2) - (a.Width / 2) + a.Position.Left) - a.Position.Right, control.Location.Y);
+                    break;
+                case Anchor.HorizontalAlignment.Left:
+                    control.Location = new Vector2((control.Location.X + a.Position.Left) - a.Position.Right, control.Location.Y);
+                    break;
+                case Anchor.HorizontalAlignment.Right:
+                    control.Location = new Vector2((a.Width + a.Position.Left) - a.Position.Right, control.Location.Y);
+                    break;
+                case Anchor.HorizontalAlignment.Full:
+                    control.Location = new Vector2(RectObjectUI.X, control.Location.Y);
+                    control .Width = a.Width;
+                    break;
+            }
+            switch (a.Vertical)
+            {
+                case Anchor.VerticalAlignment.Top:
+                    break;
+                case Anchor.VerticalAlignment.Bottom:
+                    break;
+                case Anchor.VerticalAlignment.Center:
+                    break;
+                case Anchor.VerticalAlignment.Full:
+                    break;
+            }
+
+            a.Resize = true;
+        }
+
+        
+
+       /* private void ResetRadioButton(RadioButtonUI r ) {
             foreach (var item in Controls)
             {
                 if (item is RadioButtonUI cntr)
@@ -115,7 +178,7 @@ namespace UIControl_MonoGame.UIControl
                     if (r != cntr) cntr.IsChecked=false;
                 }
             }
-        }
+        }*/
 
     }
 }

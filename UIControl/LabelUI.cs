@@ -5,7 +5,7 @@ using System;
 
 namespace UIControl_MonoGame.UIControl
 {
-    public class LabelUI : Cordinator, IControlUI
+    public class LabelUI : Cordinator, IControlUI, IToXml
     {
         public Vector2 Location { get => new(RectObjectUI.X, RectObjectUI.Y); set => RectObjectUI = new Rectangle((int)value.X, (int)value.Y, RectObjectUI.Width, RectObjectUI.Height); }
         public bool Visible { get ; set ; }
@@ -13,6 +13,7 @@ namespace UIControl_MonoGame.UIControl
         public string Name { get; set; }
         public int Height { get => RectObjectUI.Height; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, RectObjectUI.Width, value); }
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
+        public Anchor AnchorLocation { get; set; }
 
         public delegate void MouseEnter();
         /// <summary>
@@ -68,5 +69,7 @@ namespace UIControl_MonoGame.UIControl
             Background?.Display(spriteBatch, gameTime, RectObjectUI);
             Caption.Display(spriteBatch, RectObjectUI);
         }
+
+        public string ToXml() => INDENT +  IToXml.ConvertXml(this)[..^2] + "\n" + INDENT + "</"+  this.GetType ().Name + ">";
     }
 }

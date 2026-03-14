@@ -18,6 +18,7 @@ namespace UIControl_MonoGame.UIControl
         public string Name { get => _name; set => _name = value; }
         public int Height { get => RectObjectUI.Height; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, RectObjectUI.Width, value); }
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
+        public Anchor AnchorLocation { get; set; }
 
         public delegate void Click();
         /// <summary>

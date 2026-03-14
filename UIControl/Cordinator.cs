@@ -18,6 +18,7 @@ namespace UIControl_MonoGame.UIControl
         /// </summary>
         protected Rectangle RectObjectUI;
         protected Game _game;
+        protected const string INDENT = "    ";
 
         protected Texture2D RedPixel
         {
@@ -63,7 +64,7 @@ namespace UIControl_MonoGame.UIControl
         /// <summary>
         /// Parameters for the text
         /// </summary>
-        public class UIText : AdvancedSettings
+        public class UIText : AdvancedSettings, IToXml
         {
             private SpriteFont _font;
             private string _fontName;
@@ -124,6 +125,8 @@ namespace UIControl_MonoGame.UIControl
                 return poss;
             }
 
+            public string ToXml()=> INDENT + INDENT + IToXml.ConvertXml(this)[..^2] ;
+
             /// <summary>
             /// Text position
             /// </summary>
@@ -136,7 +139,7 @@ namespace UIControl_MonoGame.UIControl
         /// <summary>
         /// Universal texture as animation or without it
         /// </summary>
-        public class UITexture: AdvancedSettings
+        public class UITexture: AdvancedSettings, IToXml
         {     
             private int _indexDelay = 0;
             private readonly List<Frame> _frames = [];
@@ -180,8 +183,9 @@ namespace UIControl_MonoGame.UIControl
                         if (_indexDelay >= _frames.Count) _indexDelay = 0;
                     }
                 }
-            }           
+            }
 
+            public string ToXml() => INDENT + INDENT + IToXml.ConvertXml(this)[..^2] ;
 
             /// <summary>
             /// Frame-by-frame animation
@@ -242,7 +246,48 @@ namespace UIControl_MonoGame.UIControl
             }
         }
 
+        /// <summary>
+        /// Alignment setting
+        /// </summary>
+        public class Anchor :IToXml
+        {
+            public HorizontalAlignment Horizontal { get; set; } = HorizontalAlignment.Full;
+            public VerticalAlignment Vertical { get; set; } = VerticalAlignment.Full;
+            public int Height { get; set; }
+            public int Width { get; set; }
+            public Margin Position { get; set; }
+            public bool Resize = false;
 
+            public struct Margin(int top, int bottom, int left, int right)
+            {
+                public int Top = top;
+                public int Bottom = bottom;
+                public int Left = left;
+                public int Right = right;
+
+                public override readonly string ToString()=> "\"" + Left + ", " + Top + ", " + Right + ", " + Bottom + "\n";
+            }
+
+            public Anchor(int height, int width, HorizontalAlignment horizontal, VerticalAlignment vertical, Margin position) { 
+                Height = height;
+                Width = width;
+                Position = position;
+                Horizontal = horizontal;
+                Vertical=vertical;
+            }
+
+            public string ToXml() => INDENT + INDENT + IToXml.ConvertXml(this)[..^2] ;
+
+            public enum HorizontalAlignment
+            {
+                Center, Left, Right, Full
+            }
+
+            public enum VerticalAlignment
+            {
+                Top, Bottom, Center, Full
+            }
+        }
 
 
 

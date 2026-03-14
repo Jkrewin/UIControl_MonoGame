@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
+using static UIControl_MonoGame.UIControl.Cordinator;
 
 namespace UIControl_MonoGame.UIControl
 {
@@ -30,6 +32,11 @@ namespace UIControl_MonoGame.UIControl
         /// Width of the control
         /// </summary>
         public int Width { get; set; }
+        /// <summary>
+        /// Gets or sets the alignment characteristics applied to this element when it is composed within a parent grup, such as a panel or items control
+        /// In this case, it excludes the use of Location
+        /// </summary>
+        public Anchor AnchorLocation { get; set; }
 
         /// <summary>
         /// Must always be in <i>protected override void Update(GameTime gameTime)</i> 
@@ -70,5 +77,22 @@ namespace UIControl_MonoGame.UIControl
         /// The sorting depth of the sprite, between 0 (front) and 1 (back).
         /// </summary>
         public float Layer { get; set; } = 0.5f;
+    }
+
+    public interface IToXml {
+        string ToXml();
+
+      static  public string ConvertXml(object obj) {
+            string xml = "<" + obj.GetType().Name;
+            string preXml = "";
+            foreach (var item in obj.GetType().GetProperties().Where(x => x.CanRead & x.CanWrite))
+            {
+               if (item.GetValue(obj) is null) { }
+                 else if (item.GetValue(obj) is IToXml toXml) preXml += "\n" + toXml.ToXml() + " Object=\"" + item.Name +  "\"/>*";
+                else xml += " " + item.Name + "=\"" + item.GetValue(obj).ToString() + "\" ";
+            }
+
+            return xml[..^1] + ">" + preXml + "\n" ;
+        }
     }
 }
