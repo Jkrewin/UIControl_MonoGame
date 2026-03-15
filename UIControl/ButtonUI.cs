@@ -5,7 +5,7 @@ using System;
 
 namespace UIControl_MonoGame.UIControl
 {
-    public class ButtonUI : Cordinator, IControlUI
+    public class ButtonUI : Cordinator, IControlUI, IToXml
     {
         private string _name;
         private UITexture _nowTextur;
@@ -112,6 +112,6 @@ namespace UIControl_MonoGame.UIControl
             }
         }
 
-
+        public string ToXml() => INDENT + IToXml.ConvertXml(this)[..^2] + "\n" + INDENT + "</" + this.GetType().Name + ">";
     }
 }

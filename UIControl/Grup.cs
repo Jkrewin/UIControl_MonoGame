@@ -1,14 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Linq;
 
 namespace UIControl_MonoGame.UIControl
 {
-    public class Grup : Cordinator, IControlUI
+    public class Grup : Cordinator, IControlUI, IToXml
     {
         private readonly List<IControlUI> Controls  = [];   //Controls in this group
 
@@ -78,11 +76,7 @@ namespace UIControl_MonoGame.UIControl
                 }
             }
         }
-
-        public void Remove(IControlUI control) 
-        {           
-            Controls.Remove(control);
-        }
+        public void Remove(IControlUI control) => Controls.Remove(control);
 
         public string[] ListNameControls() {
             List<string> ls = [];
@@ -91,7 +85,7 @@ namespace UIControl_MonoGame.UIControl
             {
                 ls.Add(item.Name + " " + item .GetType().Name);
             }
-            return ls.ToArray();
+            return [.. ls];
         }
 
         public void ControlEvent(MouseState getMouse, KeyboardState getKey, uint getJoy = 1)
@@ -136,49 +130,44 @@ namespace UIControl_MonoGame.UIControl
             if (control.AnchorLocation is null) return;
             if (control.AnchorLocation.Resize) return;
 
-            var a = control.AnchorLocation;
-            switch (a.Horizontal)
+            var an = control.AnchorLocation;
+            switch (an.Horizontal)
             {
                 case Anchor.HorizontalAlignment.Center:
-                    control.Location = new Vector2(((RectObjectUI.Width / 2) - (a.Width / 2) + a.Position.Left) - a.Position.Right, control.Location.Y);
+                    control.Location = new Vector2(((Width / 2) - (an.Width / 2) + an.Position.Left) - an.Position.Right, Location.Y);
                     break;
                 case Anchor.HorizontalAlignment.Left:
-                    control.Location = new Vector2((control.Location.X + a.Position.Left) - a.Position.Right, control.Location.Y);
+                    control.Location = new Vector2((Location.X + an.Position.Left) - an.Position.Right, Location.Y);
                     break;
                 case Anchor.HorizontalAlignment.Right:
-                    control.Location = new Vector2((a.Width + a.Position.Left) - a.Position.Right, control.Location.Y);
+                    control.Location = new Vector2(RectObjectUI.Right- an.Width - an.Position.Right, Location.Y);
                     break;
                 case Anchor.HorizontalAlignment.Full:
-                    control.Location = new Vector2(RectObjectUI.X, control.Location.Y);
-                    control .Width = a.Width;
+                    control.Location = new Vector2(Location.X, Location.Y);
+                    control .Width = an.Width;
                     break;
             }
-            switch (a.Vertical)
+            switch (an.Vertical)
             {
                 case Anchor.VerticalAlignment.Top:
+                    control.Location = new Vector2(control.Location.X, Location.Y + an.Position.Top );
                     break;
                 case Anchor.VerticalAlignment.Bottom:
+                    control.Location = new Vector2(control.Location.X, RectObjectUI.Bottom -  an.Height - an.Position.Bottom);
                     break;
                 case Anchor.VerticalAlignment.Center:
+                    control.Location = new Vector2(control.Location.X, ((Height / 2) - (an.Height / 2) - an.Position.Top) + an.Position.Bottom);
                     break;
                 case Anchor.VerticalAlignment.Full:
+                    control.Location = new Vector2(control.Location.X, Location.Y);
+                    control.Height = an.Height;
                     break;
             }
 
-            a.Resize = true;
+            an.Resize = true;
         }
 
-        
-
-       /* private void ResetRadioButton(RadioButtonUI r ) {
-            foreach (var item in Controls)
-            {
-                if (item is RadioButtonUI cntr)
-                {
-                    if (r != cntr) cntr.IsChecked=false;
-                }
-            }
-        }*/
+      
 
     }
 }

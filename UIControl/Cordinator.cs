@@ -18,6 +18,9 @@ namespace UIControl_MonoGame.UIControl
         /// </summary>
         protected Rectangle RectObjectUI;
         protected Game _game;
+        /// <summary>
+        /// One tab symbol
+        /// </summary>
         protected const string INDENT = "    ";
 
         protected Texture2D RedPixel
@@ -59,7 +62,6 @@ namespace UIControl_MonoGame.UIControl
 
             return rectTexture;
         }
-
 
         /// <summary>
         /// Parameters for the text
@@ -125,7 +127,7 @@ namespace UIControl_MonoGame.UIControl
                 return poss;
             }
 
-            public string ToXml()=> INDENT + INDENT + IToXml.ConvertXml(this)[..^2] ;
+            public string ToXml()=> INDENT + INDENT + IToXml.ConvertXml(this)[..^2] + "/>";
 
             /// <summary>
             /// Text position
@@ -185,12 +187,20 @@ namespace UIControl_MonoGame.UIControl
                 }
             }
 
-            public string ToXml() => INDENT + INDENT + IToXml.ConvertXml(this)[..^2] ;
+            public string ToXml()
+            {
+                string deep = "\n" + INDENT + INDENT + INDENT+ "<Frames>";
+                foreach (var frame in _frames) { 
+                 deep+= frame.ToXml();
+                }
+                deep += "\n" + INDENT + INDENT + INDENT + "</Frames>";
+                return INDENT + INDENT + IToXml.ConvertXml(this)[..^2] + ">" + deep + "\n" + INDENT + INDENT +  "</UITexture>";
+            }
 
             /// <summary>
             /// Frame-by-frame animation
             /// </summary>
-            public readonly struct Frame
+            public readonly struct Frame: IToXml
             {
                 /// <summary>
                 /// A texture or one large texture with multiple frames
@@ -243,19 +253,20 @@ namespace UIControl_MonoGame.UIControl
                     TextureName = string.Empty;
                 }
 
+                public string ToXml() => "\n"+  INDENT + INDENT + INDENT + INDENT + "<Frame Delay=\""+ Delay  + "\" TextureName=\""+ TextureName + "\" RectangelFrame=\""+RectangelFrame.ToString()+"\"/>";
             }
         }
 
         /// <summary>
         /// Alignment setting
         /// </summary>
-        public class Anchor :IToXml
+        public class Anchor(int height, int width, Anchor.HorizontalAlignment horizontal, Anchor.VerticalAlignment vertical, Anchor.Margin position) : IToXml
         {
-            public HorizontalAlignment Horizontal { get; set; } = HorizontalAlignment.Full;
-            public VerticalAlignment Vertical { get; set; } = VerticalAlignment.Full;
-            public int Height { get; set; }
-            public int Width { get; set; }
-            public Margin Position { get; set; }
+            public HorizontalAlignment Horizontal { get; set; } = horizontal;
+            public VerticalAlignment Vertical { get; set; } = vertical;
+            public int Height { get; set; } = height;
+            public int Width { get; set; } = width;
+            public Margin Position { get; set; } = position;
             public bool Resize = false;
 
             public struct Margin(int top, int bottom, int left, int right)
@@ -266,14 +277,7 @@ namespace UIControl_MonoGame.UIControl
                 public int Right = right;
 
                 public override readonly string ToString()=> "\"" + Left + ", " + Top + ", " + Right + ", " + Bottom + "\n";
-            }
-
-            public Anchor(int height, int width, HorizontalAlignment horizontal, VerticalAlignment vertical, Margin position) { 
-                Height = height;
-                Width = width;
-                Position = position;
-                Horizontal = horizontal;
-                Vertical=vertical;
+                public static Margin MarginZero { get => new(0, 0, 0, 0); }
             }
 
             public string ToXml() => INDENT + INDENT + IToXml.ConvertXml(this)[..^2] ;

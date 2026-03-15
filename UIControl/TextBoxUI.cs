@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace UIControl_MonoGame.UIControl
 {
-    public class TextBoxUI : Cordinator, IControlUI
+    public class TextBoxUI : Cordinator, IControlUI, IToXml
     {
         private bool ShowCursor;
         private readonly Stopwatch CursorTimer = new();
@@ -66,8 +66,7 @@ namespace UIControl_MonoGame.UIControl
             CursorPosition = text.Length;
             Visible = true;
         }
-
-        public string ToXml() => IToXml.ConvertXml(this) + "</" + this.GetType().Name + ">";
+                
 
         public void ControlEvent(MouseState getMouse, KeyboardState getKey, uint getJoy = 1)
         {
@@ -201,7 +200,7 @@ namespace UIControl_MonoGame.UIControl
             }
         }
 
-
+        public string ToXml() => INDENT + IToXml.ConvertXml(this)[..^2] + "\n" + INDENT + "</" + this.GetType().Name + ">";
 
 
     }

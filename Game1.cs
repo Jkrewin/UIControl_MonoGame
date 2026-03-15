@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using static UIControl_MonoGame.UIControl.Cordinator.Anchor;
 using UIControl_MonoGame.Extra;
 using UIControl_MonoGame.UIControl;
 
@@ -13,13 +14,14 @@ namespace UIControl_MonoGame
     /// </summary>
 
 
-
     public class Game1 : Game
     {
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private UIControl.Grup SelectedGrup; // Implements a way to switch between groups
         private UIControl.Grup Grup1;
+        private UIControl.Grup Grup2;
 
         public Game1()
         {
@@ -65,8 +67,7 @@ namespace UIControl_MonoGame
             testRows.Add(new TestRow(texture_icon, "Easy"));
             testRows.Add(new TestRow(texture_icon, "Normal"));
             testRows.Add(new TestRow(texture_icon, "Hard"));
-
-
+            
             /// 3. Add Controls
             Grup1.Add(new ImageUI(this, "bg", new(10, 10, 800, 500), "dialogBox")); // Background of the dialog box
             Grup1.Add(new LabelUI(this,"title", new Rectangle(300,100,200,20), "Title Form", "TitleFont")); // Add label 
@@ -92,13 +93,18 @@ namespace UIControl_MonoGame
             l.Сolumns[0].WidthRows = l.Сolumns[0].HeightRows; // We make this column to fit the texture size
             Grup1.Add(l);
             Grup1.Add(new ImageUI(this,"image2",new Rectangle(100,300,130,150), animation));    // Image
+            SelectedGrup = Grup1;
 
-
-           /* var r = new Editor();
-            r.MainGrup = Grup1;
-            var t = r.MainGrup.ToXml();
+            var r = new Editor(Grup1);  
             r.SaveXml();
-            r.Load(Grup1);*/
+            // r.Load(Grup1);
+
+            
+           /* Grup2 = new Grup(this, new Rectangle(10, 10, 800, 500), "Grup2");
+            Grup2.ShowRedLine = true;
+            t1.AnchorLocation = new Cordinator.Anchor(50, 300, HorizontalAlignment.Left, VerticalAlignment.Center, new Margin(50,66,150,0));
+            Grup2.Add(t1);
+            SelectedGrup = Grup2;*/
 
         }
 
@@ -127,7 +133,7 @@ namespace UIControl_MonoGame
             }
 
 
-            Grup1.ControlEvent(Mouse.GetState(), Keyboard.GetState(), 0); // Manages the input device this group
+            SelectedGrup.ControlEvent(Mouse.GetState(), Keyboard.GetState(), 0); // Manages the input device this group
 
             base.Update(gameTime);
         }
@@ -137,7 +143,7 @@ namespace UIControl_MonoGame
             GraphicsDevice.Clear(Color.White);
             _spriteBatch.Begin();
 
-            Grup1.Draw(gameTime, _spriteBatch);     // Manages graphics for elements within a group
+            SelectedGrup.Draw(gameTime, _spriteBatch);     // Manages graphics for elements within a group
 
             _spriteBatch.End();
             base.Draw(gameTime);

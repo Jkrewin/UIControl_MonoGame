@@ -5,7 +5,7 @@ using System;
 
 namespace UIControl_MonoGame.UIControl
 {
-    public class CheckBoxUI : Cordinator, IControlUI
+    public class CheckBoxUI : Cordinator, IControlUI,IToXml
     {
         public Vector2 Location { get => new(RectObjectUI.X, RectObjectUI.Y); set => RectObjectUI = new Rectangle((int)value.X, (int)value.Y, RectObjectUI.Width, RectObjectUI.Height); }
         public bool Visible { get; set; }
@@ -115,5 +115,7 @@ namespace UIControl_MonoGame.UIControl
             MainTexture.Display(spriteBatch, gameTime, RectObjectUI);
             Caption?.Display(spriteBatch,RectObjectUI);
         }
+
+        public string ToXml() => INDENT + IToXml.ConvertXml(this)[..^2] + "\n" + INDENT + "</" + this.GetType().Name + ">";
     }
 }

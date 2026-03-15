@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace UIControl_MonoGame.UIControl
 {
-    public class ImageUI : Cordinator, IControlUI
+    public class ImageUI : Cordinator, IControlUI, IToXml
     {
         public Vector2 Location { get => new(RectObjectUI.X, RectObjectUI.Y); set => RectObjectUI = new Rectangle((int)value.X, (int)value.Y, RectObjectUI.Width, RectObjectUI.Height); }
         public bool Visible { get; set; }
@@ -74,5 +74,7 @@ namespace UIControl_MonoGame.UIControl
             if (Visible == false) return;
             Image.Display(spriteBatch, gameTime,RectObjectUI);
         }
+
+        public string ToXml() => INDENT + IToXml.ConvertXml(this)[..^2] + "\n" + INDENT + "</" + this.GetType().Name + ">";
     }
 }

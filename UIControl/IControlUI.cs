@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Linq;
+using System.Xml.Serialization;
 using static UIControl_MonoGame.UIControl.Cordinator;
 
 namespace UIControl_MonoGame.UIControl
@@ -44,7 +46,7 @@ namespace UIControl_MonoGame.UIControl
         /// <param name="getMouse">Mouse.GetState())</param>
         /// <param name="getKey">Keyboard.GetState()</param>
         /// <param name="getJoy">--</param>
-        public void ControlEvent(MouseState getMouse , KeyboardState getKey , uint  getJoy  = 1);
+        public void ControlEvent(MouseState getMouse, KeyboardState getKey, uint getJoy = 1);
         /// <summary>
         /// For protected override void Draw(GameTime gameTime)
         /// </summary>
@@ -56,7 +58,8 @@ namespace UIControl_MonoGame.UIControl
     /// <summary>
     /// Advanced settings for Draw or DrawString
     /// </summary>
-    public class AdvancedSettings {
+    public class AdvancedSettings
+    {
         /// <summary>
         /// The origin of the string. Specify (0,0) for the upper-left corner.
         /// </summary>
@@ -79,20 +82,40 @@ namespace UIControl_MonoGame.UIControl
         public float Layer { get; set; } = 0.5f;
     }
 
-    public interface IToXml {
+    /// <summary>
+    /// Suitable for creating a file XML
+    /// </summary>
+    public interface IToXml
+    {
+        /// <summary>
+        /// A string for XML
+        /// </summary>
+        /// <returns>XML</returns>
         string ToXml();
 
-      static  public string ConvertXml(object obj) {
+        static public string ConvertXml(object obj)
+        {
             string xml = "<" + obj.GetType().Name;
             string preXml = "";
             foreach (var item in obj.GetType().GetProperties().Where(x => x.CanRead & x.CanWrite))
             {
-               if (item.GetValue(obj) is null) { }
-                 else if (item.GetValue(obj) is IToXml toXml) preXml += "\n" + toXml.ToXml() + " Object=\"" + item.Name +  "\"/>*";
-                else xml += " " + item.Name + "=\"" + item.GetValue(obj).ToString() + "\" ";
+                if (!item.GetCustomAttributes(true).Any(x => x is XmlIgnoreAttribute))
+                {
+                    if (item.GetValue(obj) is null) { }
+                    else if (item.GetValue(obj) is IToXml toXml)
+                    {
+                        string p = toXml.ToXml();
+                        string ps = p.Split("<")[1];
+                        string spen = string.Concat("<", ps.AsSpan(0, ps.IndexOf(' ')));
+                        string[] pn = p.Split(spen);
+                        p = pn[0] + spen + " Object=\"" + item.Name + "\" " + pn[1];
+                        preXml += "\n" + p + "  ";
+                    }
+                    else xml += " " + item.Name + "=\"" + item.GetValue(obj).ToString() + "\" ";
+                }
             }
 
-            return xml[..^1] + ">" + preXml + "\n" ;
+            return xml[..^1] + ">" + preXml + "\n";
         }
     }
 }

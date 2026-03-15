@@ -1,19 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using UIControl_MonoGame.UIControl;
 using static UIControl_MonoGame.UIControl.Cordinator.UIText;
-using static UIControl_MonoGame.UIControl.ListItemUI.Row;
 
 
 namespace UIControl_MonoGame.Extra
@@ -24,13 +17,13 @@ namespace UIControl_MonoGame.Extra
         private string SFile = AppContext.BaseDirectory + "editor.xml";
         private bool _saveFile = false;
         private DateTime _lastRead;
+        private readonly Grup MainGrup;
 
-        public Grup MainGrup { get; set; }
-
-        public Editor() {
-            
+        public Editor(Grup grup) 
+        {            
             string directory = Path.GetDirectoryName(AppContext.BaseDirectory);
             string fileName = Path.GetFileName(SFile);
+            MainGrup = grup; 
 
              _watcher = new FileSystemWatcher(directory, fileName)
             {
@@ -42,8 +35,7 @@ namespace UIControl_MonoGame.Extra
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
-        {
-           
+        {           
             if (File.Exists(SFile) )
             {
                 var lastWrite = File.GetLastWriteTime(SFile);
@@ -61,7 +53,7 @@ namespace UIControl_MonoGame.Extra
                                 return;
                             }
 
-
+                            Load();
 
                         }
                         catch  { throw; }
@@ -71,7 +63,7 @@ namespace UIControl_MonoGame.Extra
         }
 
 
-        public void Load(Grup grup) {
+        public void Load() {
             const string errro = "The control with the name cannot be found";
             
             var doc = XDocument.Load(SFile);
@@ -82,7 +74,7 @@ namespace UIControl_MonoGame.Extra
             foreach (XElement elem in root.Elements())
             {
                 if (elem.Name.LocalName == nameof(LabelUI)) {
-                    var label = grup.FindControl<LabelUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
+                    var label = MainGrup.FindControl<LabelUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
                     SetClass(label, elem);
 
                     foreach (XElement elem2 in elem.Elements())
@@ -90,13 +82,9 @@ namespace UIControl_MonoGame.Extra
                         var c = elem2.Attribute("Object");
                         if (c != null) SetClass(label.GetType().GetProperty(c.Value).GetValue(label), elem2);
                     }
-
                 }
                 else throw new Exception("Unregistered Elements " + elem.Name);
             }
-
-
-
         }
 
 
@@ -109,7 +97,7 @@ namespace UIControl_MonoGame.Extra
         }
 
 
-        private string ContentList() {
+        private static string ContentList() {
             var fonts= "<Sprites>";
             var contentDirectory = AppContext.BaseDirectory + "Content\\";
             if (!Directory.Exists(contentDirectory)) return "";               

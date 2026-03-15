@@ -5,11 +5,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 using static UIControl_MonoGame.UIControl.ListItemUI.Row;
 
 namespace UIControl_MonoGame.UIControl
 {
-    public class ListItemUI : Cordinator, IControlUI
+    public class ListItemUI : Cordinator, IControlUI, IToXml
     {
         private List<Сolumn> _сolumns;
         private readonly string DefaultText;
@@ -31,7 +32,7 @@ namespace UIControl_MonoGame.UIControl
         /// Line thickness separating columns and rows
         /// </summary>
         public int Thickness { get; set; } = 2;
-        public List<Row> DataItems { get; set; }
+        [XmlIgnore] public List<Row> DataItems { get; set; }
         public Color SelectionColor { get; set; } = Color.LightBlue;
 
         public delegate void Click( );
@@ -209,6 +210,18 @@ namespace UIControl_MonoGame.UIControl
             {
                 ResizeColumns_Height(30);
             }
+        }
+
+        public string ToXml()
+        {
+            string deep = "\n" + INDENT + INDENT  + "<DataItems>";
+            foreach (var item in  DataItems )
+            {
+                deep += "\n" + INDENT + INDENT+ INDENT + "<Items>" + item.ToString() + "</Items>";
+            }
+            deep += "\n"+ INDENT + INDENT+ "</DataItems>";
+
+            return $"{INDENT}{IToXml.ConvertXml(this)[..^2]}>{deep}\n{INDENT}</{this.GetType().Name}>";
         }
 
         public class Сolumn
