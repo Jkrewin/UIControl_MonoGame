@@ -16,6 +16,11 @@ namespace UIControl_MonoGame.UIControl
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
         public Anchor AnchorLocation { get; set; }
 
+        public delegate void Click();
+        /// <summary>
+        /// Event when the mouse clicks on the button
+        /// </summary>
+        public event Click OnClick;
         public delegate void MouseEnter();
         /// <summary>
         /// Occurs when the mouse is in the control UI
@@ -58,8 +63,14 @@ namespace UIControl_MonoGame.UIControl
 
             bool isHovered = getMouse.X >= RectObjectUI.X && getMouse.X <= RectObjectUI.X + RectObjectUI.Width &&
             getMouse.Y >= RectObjectUI.Y && getMouse.Y <= RectObjectUI.Y + RectObjectUI.Height;
-
-            if (getMouse.LeftButton == ButtonState.Released & isHovered == false)
+           
+            if (getMouse.LeftButton == ButtonState.Pressed & isHovered & Cliker == false)
+            {
+                Cliker = true;
+                Focused = true;
+                OnClick?.Invoke();
+            }
+            else if (getMouse.LeftButton == ButtonState.Released & isHovered == false)
             {
                 OnMouseLeave?.Invoke();
             }

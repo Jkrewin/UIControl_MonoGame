@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using static UIControl_MonoGame.UIControl.Cordinator.Anchor;
 using UIControl_MonoGame.Extra;
 using UIControl_MonoGame.UIControl;
 
@@ -99,12 +98,19 @@ namespace UIControl_MonoGame
             r.SaveXml();
             // r.Load(Grup1);
 
-            
-           /* Grup2 = new Grup(this, new Rectangle(10, 10, 800, 500), "Grup2");
-            Grup2.ShowRedLine = true;
-            t1.AnchorLocation = new Cordinator.Anchor(50, 300, HorizontalAlignment.Left, VerticalAlignment.Center, new Margin(50,66,150,0));
-            Grup2.Add(t1);
-            SelectedGrup = Grup2;*/
+            /* List<ListItemUI.StandartItem> standart = [];
+             standart.Add(new ListItemUI.StandartItem("item1"));
+             standart.Add(new ListItemUI.StandartItem("item2"));
+             standart.Add(new ListItemUI.StandartItem("item3"));
+             standart.Add(new ListItemUI.StandartItem("item4"));
+             standart.Add(new ListItemUI.StandartItem("item5"));
+             standart.Add(new ListItemUI.StandartItem("item6"));
+             l.LoadItems(standart);
+             Grup2 = new Grup(this, new Rectangle(10, 10, 800, 500), "Grup2");
+             Grup2.ShowRedLine = true;
+             t1.AnchorLocation = new Cordinator.Anchor(50, 300, HorizontalAlignment.Left, VerticalAlignment.Center, new Margin(50,66,150,0));
+             Grup2.Add(t1);*/
+            SelectedGrup = Grup1;
 
         }
 
@@ -119,7 +125,7 @@ namespace UIControl_MonoGame
 
         private void ButtonImg_OnClick()
         {
-            Grup1.Visible = false;
+           Exit();
         }
 
         protected override void Update(GameTime gameTime)

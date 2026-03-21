@@ -42,6 +42,16 @@ namespace UIControl_MonoGame.UIControl
         /// Control in focus for text input
         /// </summary>
         public event SetFocuse OnFocus;
+        public delegate void MouseEnter();
+        /// <summary>
+        /// Event at the moment when the mouse entered the control 
+        /// </summary>
+        public event MouseEnter OnMouseEnter;
+        public delegate void MouseLeave();
+        /// <summary>
+        /// Event when the mouse left the control 
+        /// </summary>
+        public event MouseLeave OnMouseLeave;
 
         /// <summary>
         /// Text 
@@ -81,6 +91,14 @@ namespace UIControl_MonoGame.UIControl
                 Cliker = true;
                 Focused = true;
                 OnFocus?.Invoke();
+            }
+            else if (getMouse.LeftButton == ButtonState.Released & isHovered == false)
+            {
+                OnMouseLeave?.Invoke();
+            }
+            else if (isHovered)
+            {
+                OnMouseEnter?.Invoke();
             }
 
 

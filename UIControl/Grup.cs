@@ -46,6 +46,13 @@ namespace UIControl_MonoGame.UIControl
             _game = game;
         }
 
+        /// <summary>
+        /// Finds the control by name
+        /// </summary>
+        /// <typeparam name="T">You must specify the type of control IControlUI </typeparam>
+        /// <param name="name">Name control</param>
+        /// <returns>null - there is no result only Exception</returns>
+        /// <exception cref="System.Exception">The control was not found</exception>
         public T FindControl<T>(string name) where T : IControlUI
         {
             foreach (var control in Controls)
@@ -58,10 +65,12 @@ namespace UIControl_MonoGame.UIControl
             throw new System.Exception("The control with the name " + name + " [" + typeof(T).Name + "] was not found ");
         }
 
+        /// <summary>
+        /// Adds a control to this group Exception: The control name cannot be empty or have a similar name.
+        /// </summary>
         public void Add(IControlUI control) {
             if (string.IsNullOrEmpty(control.Name)) throw new System.Exception("The name of the control is not specified");
             if (Controls.Any(x => x.Name == control.Name)) throw new System.Exception("A control with that name already exists in the group.");
-
             
             Controls.Add(control);
         }
@@ -124,6 +133,10 @@ namespace UIControl_MonoGame.UIControl
                 if (item is IToXml xml) deep += "\n" + xml.ToXml();
             }
             return deep;
+        }
+
+        public string ToXmlTitle() {
+            return $"{IToXml.ConvertXml(this)[..^2]}>";
         }
 
         private void ResizeAnchor(IControlUI control ) {

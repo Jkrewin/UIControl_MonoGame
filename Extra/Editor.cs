@@ -92,7 +92,7 @@ namespace UIControl_MonoGame.Extra
             if (MainGrup is null) return;
             _saveFile = true;
             File.WriteAllText(SFile, 
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n <"+ MainGrup.GetType().Name + ">" + MainGrup.ToXml() + "\n"+ ContentList() + "\n</"+ MainGrup.GetType().Name+">", System.Text.Encoding.Default);
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n "+ MainGrup.ToXmlTitle() + "" + MainGrup.ToXml() + "\n"+ ContentList() + "\n</"+ MainGrup.GetType().Name+">", System.Text.Encoding.Default);
             
         }
 

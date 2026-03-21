@@ -7,7 +7,7 @@ namespace UIControl_MonoGame.UIControl
 {
     public class Cordinator
     {
-        private const int CLICKTIMER = 250; //Delay at the next mouse click
+        private const int CLICKTIMER = 150; //Delay at the next mouse click
 
         private bool _clicker = false;
         private readonly Stopwatch Stopwatch_clicker = new ();
