@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,13 +18,15 @@ namespace UIControl_MonoGame.Extra
         private string SFile = AppContext.BaseDirectory + "editor.xml";
         private bool _saveFile = false;
         private DateTime _lastRead;
-        private readonly Grup MainGrup;
+        private readonly Group MainGroup;
 
-        public Editor(Grup grup) 
+        public string XML_Content { get => "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n " + MainGroup.ToXmlTitle() + "" + MainGroup.ToXml() + "\n</" + MainGroup.GetType().Name + ">\n" + ContentList(); }
+
+        public Editor(Group Group) 
         {            
             string directory = Path.GetDirectoryName(AppContext.BaseDirectory);
             string fileName = Path.GetFileName(SFile);
-            MainGrup = grup; 
+            MainGroup = Group; 
 
              _watcher = new FileSystemWatcher(directory, fileName)
             {
@@ -73,26 +76,60 @@ namespace UIControl_MonoGame.Extra
 
             foreach (XElement elem in root.Elements())
             {
-                if (elem.Name.LocalName == nameof(LabelUI)) {
-                    var label = MainGrup.FindControl<LabelUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
+                if (elem.Name.LocalName == nameof(LabelUI))
+                {
+                    var label = MainGroup.FindControl<LabelUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
                     SetClass(label, elem);
-
-                    foreach (XElement elem2 in elem.Elements())
-                    {
-                        var c = elem2.Attribute("Object");
-                        if (c != null) SetClass(label.GetType().GetProperty(c.Value).GetValue(label), elem2);
-                    }
+                    edit_cntr(elem.Elements(), label);
                 }
+                else if (elem.Name.LocalName == nameof(ImageUI))
+                {
+                    var img = MainGroup.FindControl<ImageUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
+                    SetClass(img, elem);
+                    edit_cntr(elem.Elements(), img);
+                }
+                else if (elem.Name.LocalName == nameof(ButtonUI))
+                {
+                    var button = MainGroup.FindControl<ButtonUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
+                    SetClass(button, elem);
+                    edit_cntr(elem.Elements(), button);
+                }
+                else if (elem.Name.LocalName == nameof(CheckBoxUI))
+                {
+                    var check = MainGroup.FindControl<CheckBoxUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
+                    SetClass(check, elem);
+                    edit_cntr(elem.Elements(), check);
+                }
+                else if (elem.Name.LocalName == nameof(ListItemUI))
+                {
+                    var list = MainGroup.FindControl<ListItemUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
+                    SetClass(list, elem);
+                    edit_cntr(elem.Elements(), list);
+                }
+                else if (elem.Name.LocalName == nameof(TextBoxUI))
+                {
+                    var text = MainGroup.FindControl<TextBoxUI>(elem.Attribute("Name")?.Value) ?? throw new Exception(errro + " " + elem.Attribute("Name")?.Value);
+                    SetClass(text, elem);
+                    edit_cntr(elem.Elements(), text);
+                }
+                else if (elem.Name.LocalName == "Sprites") { }
                 else throw new Exception("Unregistered Elements " + elem.Name);
+            }
+
+            void edit_cntr(IEnumerable<XElement> xes, IControlUI control ) {
+                foreach (XElement elem2 in xes)
+                {
+                    var c = elem2.Attribute("Object");
+                    if (c != null) SetClass(control.GetType().GetProperty(c.Value).GetValue(control), elem2);
+                }
             }
         }
 
 
         public void SaveXml() {
-            if (MainGrup is null) return;
+            if (MainGroup is null) return;
             _saveFile = true;
-            File.WriteAllText(SFile, 
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?> \n "+ MainGrup.ToXmlTitle() + "" + MainGrup.ToXml() + "\n"+ ContentList() + "\n</"+ MainGrup.GetType().Name+">", System.Text.Encoding.Default);
+            File.WriteAllText(SFile, XML_Content    , System.Text.Encoding.Default);
             
         }
 
@@ -115,6 +152,7 @@ namespace UIControl_MonoGame.Extra
                 string assetName = Path.GetRelativePath(contentDirectory, file).Replace(".png", "").Replace("\\", "/");
                 fonts += "\n      <Texture2D>" + assetName + "</Texture2D>";
             }
+           
 
             return fonts + "\n</Sprites>";
         }

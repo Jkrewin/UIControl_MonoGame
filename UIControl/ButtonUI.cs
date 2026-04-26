@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace UIControl_MonoGame.UIControl
 {
@@ -19,6 +20,7 @@ namespace UIControl_MonoGame.UIControl
         public int Height { get => RectObjectUI.Height; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, RectObjectUI.Width, value); }
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
         public Anchor AnchorLocation { get; set; }
+        public HotKey HotKeys { get; set; } = new();
 
         public delegate void Click();
         /// <summary>
@@ -93,7 +95,9 @@ namespace UIControl_MonoGame.UIControl
             bool isHovered = getMouse.X >= RectObjectUI.X && getMouse.X <= RectObjectUI.X + RectObjectUI.Width &&
              getMouse.Y >= RectObjectUI.Y && getMouse.Y <= RectObjectUI.Y + RectObjectUI.Height;
 
-            if (getMouse.LeftButton == ButtonState.Pressed & isHovered & Cliker == false)
+          
+            if ((getMouse.LeftButton == ButtonState.Pressed & isHovered & Cliker == false)
+                ||HotKeys.KeyTest(getKey)== HotKey.ActEnum.ActionEnter )
             {
                 Cliker = true;
                 Focused = true;

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace UIControl_MonoGame.UIControl
 {
-    public class Grup : Cordinator, IControlUI, IToXml
+    public class Group : Cordinator, IControlUI, IToXml
     {
         private readonly List<IControlUI> Controls  = [];   //Controls in this group
 
@@ -39,7 +39,7 @@ namespace UIControl_MonoGame.UIControl
         public int Width { get => RectObjectUI.Width; set => RectObjectUI = new Rectangle(RectObjectUI.X, RectObjectUI.Y, value, RectObjectUI.Height); }
         public Anchor AnchorLocation { get; set; }
 
-        public Grup(Game game, Rectangle recPoss, string name)
+        public Group(Game game, Rectangle recPoss, string name)
         {
             RectObjectUI = recPoss;
             Name = name;
@@ -99,11 +99,8 @@ namespace UIControl_MonoGame.UIControl
 
         public void ControlEvent(MouseState getMouse, KeyboardState getKey, uint getJoy = 1)
         {
-            if (Visible)
-            {
-                foreach (var control in Controls) control.ControlEvent(getMouse, getKey, getJoy);
-            }
-        }
+            if (Visible) foreach (var control in Controls) control.ControlEvent(getMouse, getKey, getJoy);
+		}
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {

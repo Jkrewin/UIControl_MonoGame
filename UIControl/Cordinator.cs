@@ -1,7 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using static UIControl_MonoGame.UIControl.Cordinator;
+using static UIControl_MonoGame.UIControl.Cordinator.HotKey;
 
 namespace UIControl_MonoGame.UIControl
 {
@@ -293,7 +297,44 @@ namespace UIControl_MonoGame.UIControl
             }
         }
 
+        /// <summary>
+        /// Keyboard shortcuts
+        /// </summary>
+        public class HotKey: IToXml
+        {
 
+            public readonly Dictionary <Keys, ActEnum> KeysList  = [];
+
+            public ActEnum KeyTest(KeyboardState getKey) {
+                foreach (var item in KeysList)
+                {
+                    if (getKey.IsKeyDown(item.Key)) { 
+                    return item.Value;
+                    }
+                }              
+                return ActEnum.None;
+            }
+
+            public string ToXml()
+            {
+                if (KeysList.Count == 0) return "";
+                string deep = "\n" + INDENT + INDENT + INDENT + "<HotKey>";
+                foreach (var item in KeysList) {
+                    deep = "\n" + INDENT + INDENT + INDENT + INDENT+ $"<KeysList Keys=\"{item.Key}\" ActEnum=\"{item.Value}\"/>";
+                }
+                return deep + "\n" + INDENT + INDENT + INDENT + "</HotKey>";
+            }
+
+            public enum ActEnum
+            { 
+                
+                ActionEnter, 
+                
+                ActionFocus,
+
+                None
+            }
+        } 
 
     }
 }

@@ -231,9 +231,17 @@ namespace UIControl_MonoGame.UIControl
             string deep = "\n" + INDENT + INDENT + "<DataItems>";
             foreach (var item in DataItems)
             {
-                deep += "\n" + INDENT + INDENT + INDENT + "<Items>" + item.ToString() + "</Items>";
+                deep += "\n" + INDENT + INDENT + INDENT + $"<Items obj=\"{item.ElementItems}\">" + spr(item) + "</Items>";
             }
             deep += "\n" + INDENT + INDENT + "</DataItems>";
+
+            string spr(Row r) {
+                string deep = "";
+                foreach (var item in r.Items) {
+                    deep  += "\n" + INDENT + INDENT + INDENT + INDENT + item.ToString();
+                }
+                return deep;
+            }
 
             return $"{INDENT}{IToXml.ConvertXml(this)[..^2]}>{deep}\n{INDENT}</{this.GetType().Name}>";
         }
@@ -296,7 +304,12 @@ namespace UIControl_MonoGame.UIControl
                 /// </summary>
                 public UIText Caption { get; } = new UIText(game, value, fontContent);
 
-                public override string ToString() => Caption.Text;
+                public override string ToString() {
+                    string deep = "<Cell ";
+                    if (Background.Name != null) deep += "txtr2D=\"" + Background.Name + "\" ";
+                    deep +="font=\""+ Caption.FontName  + "\" value=\"" + Value + "\"";
+                    return deep + "/>";
+                }
             }
         }
 

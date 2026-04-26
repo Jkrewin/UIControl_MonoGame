@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Xml.Serialization;
 using static UIControl_MonoGame.UIControl.Cordinator;
@@ -35,7 +36,7 @@ namespace UIControl_MonoGame.UIControl
         /// </summary>
         public int Width { get; set; }
         /// <summary>
-        /// Gets or sets the alignment characteristics applied to this element when it is composed within a parent grup, such as a panel or items control
+        /// Gets or sets the alignment characteristics applied to this element when it is composed within a parent Group, such as a panel or items control
         /// In this case, it excludes the use of Location
         /// </summary>
         public Anchor AnchorLocation { get; set; }
@@ -104,14 +105,25 @@ namespace UIControl_MonoGame.UIControl
                     if (item.GetValue(obj) is null) { }
                     else if (item.GetValue(obj) is IToXml toXml)
                     {
+                        // class
                         string p = toXml.ToXml();
+                        if (p == string.Empty) continue;
                         string ps = p.Split("<")[1];
                         string spen = string.Concat("<", ps.AsSpan(0, ps.IndexOf(' ')));
                         string[] pn = p.Split(spen);
                         p = pn[0] + spen + " Object=\"" + item.Name + "\" " + pn[1];
                         preXml += "\n" + p + "  ";
                     }
-                    else xml += " " + item.Name + "=\"" + item.GetValue(obj).ToString() + "\" ";
+                    else {
+                        var tt = item.PropertyType;
+                        if (tt.Name == nameof(Int32)) xml += " " + item.Name + "=\"" + ((Int32)item.GetValue(obj)).ToString(CultureInfo.InvariantCulture) + "\" ";
+                        else if (tt.Name == nameof(Decimal)) xml += " " + item.Name + "=\"" + ((Decimal)item.GetValue(obj)).ToString(CultureInfo.InvariantCulture) + "\" ";
+                        else if (tt.Name == nameof(Single)) xml += " " + item.Name + "=\"" + ((Single)item.GetValue(obj)).ToString(CultureInfo.InvariantCulture) + "\" ";
+                        else if (tt.Name == nameof(Int16)) xml += " " + item.Name + "=\"" + ((Int16)item.GetValue(obj)).ToString(CultureInfo.InvariantCulture) + "\" ";
+                        else if (tt.Name == nameof(Int64)) xml += " " + item.Name + "=\"" + ((Int64)item.GetValue(obj)).ToString(CultureInfo.InvariantCulture) + "\" ";
+                        else if (tt.Name == nameof(Int128)) xml += " " + item.Name + "=\"" + ((Int128)item.GetValue(obj)).ToString(CultureInfo.InvariantCulture) + "\" ";
+                        else xml += " " + item.Name + "=\"" + item.GetValue(obj).ToString() + "\" ";
+                    }
                 }
             }
 

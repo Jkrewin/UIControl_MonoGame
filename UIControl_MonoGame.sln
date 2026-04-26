@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36915.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIControl_MonoGame", "UIControl_MonoGame.csproj", "{E7609D14-C960-4B02-B7AB-423B495408A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FormsEditor", "..\FormsEditor\FormsEditor.csproj", "{9125FC1C-077C-4EDD-8C53-26628BD37133}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{E7609D14-C960-4B02-B7AB-423B495408A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7609D14-C960-4B02-B7AB-423B495408A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7609D14-C960-4B02-B7AB-423B495408A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9125FC1C-077C-4EDD-8C53-26628BD37133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9125FC1C-077C-4EDD-8C53-26628BD37133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9125FC1C-077C-4EDD-8C53-26628BD37133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9125FC1C-077C-4EDD-8C53-26628BD37133}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
